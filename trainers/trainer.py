@@ -11,7 +11,7 @@ from torch._C import Graph
 from torch.distributions import Normal,Categorical
 from torch.nn.utils import clip_grad_value_
 from helpers.analyze_utils import  plot_losses, AUC_score
-
+from tqdm import tqdm
 
 class Trainer(object):
     """
@@ -29,7 +29,7 @@ class Trainer(object):
 
     def train_model(self, model, X,  output_dir):
         self.output_dir = output_dir
-
+        self.flag_clustering = True
         # X is shape of (n,Ts,m) # n is the number of total subjects and m is the number of variables.
         n,Ts,m = X.shape
 
@@ -52,12 +52,14 @@ class Trainer(object):
         cluster_index = np.argmax(score)
         model.cluster = Cluster_dict[cluster_index+1]
         self._logger.info("Learning the causal structure for each clusters")
+        self.flag_clustering = False
         self.Collective_Causal_Structure_learning(model,X)
 
     def Collective_Causal_Structure_learning(self,model,X):
         graphs = []
         for clu in model.cluster:
             g = model.prior
+            self._logger.info("Learning the causal structure for clusters:{}".format(clu))
             for _ in range(self.num_total_iterations):
                 for i in clu:
                     Xs = X[i]
@@ -367,7 +369,10 @@ class Trainer(object):
 
 
         self.log_P_xT = log_P_xT.sum()
-        return (self.log_P_xT + sum(self.log_P_xp) + log_P_x1) #/Ts 
+        if self.flag_clustering:
+            return (self.log_P_xT + sum(self.log_P_xp) + log_P_x1) #/Ts 
+        else:
+            return (self.log_P_xT + sum(self.log_P_xp) + log_P_x1) /Ts 
 
 
             

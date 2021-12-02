@@ -6,10 +6,11 @@ from pytz import timezone
 from datetime import datetime
 import numpy as np
 import torch
+torch.set_num_threads(1)
 
 
 from data_loader.synthetic_dataset import SyntheticDataset
-from data_loader.real_dataset import RealDataset
+# from data_loader.real_dataset import RealDataset
 from models.Hierarchical_Causal_Clustering import Hierarchical_Causal_Clustering
 from trainers.trainer import Trainer
 

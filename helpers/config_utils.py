@@ -24,7 +24,7 @@ def get_args():
     ##### General settings #####
     parser.add_argument('--seed',
                         type=int,
-                        default=0,
+                        default=2021,
                         help='Random seed')
 
     parser.add_argument('--device',
