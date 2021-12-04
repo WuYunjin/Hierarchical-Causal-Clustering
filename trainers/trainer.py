@@ -53,7 +53,7 @@ class Trainer(object):
         model.cluster = Cluster_dict[cluster_index+1]
         self._logger.info("Learning the causal structure for each clusters")
         self.flag_clustering = False
-        self.Collective_Causal_Structure_learning(model,X)
+        # self.Collective_Causal_Structure_learning(model,X)
 
     def Collective_Causal_Structure_learning(self,model,X):
         graphs = []
@@ -90,7 +90,7 @@ class Trainer(object):
                 Cluster_result[0].append(i)
                 
         else:
-            cluster_std_likelihood = [np.std(cluster) for cluster in last_likelihood]
+            cluster_std_likelihood = [np.var(cluster,dtype=np.float64) for cluster in last_likelihood]
             # Find the cluster with the biggest cluster_std_likelihood and split it into two clusters
             while 1:
                 cluster_index = np.argmax(cluster_std_likelihood)

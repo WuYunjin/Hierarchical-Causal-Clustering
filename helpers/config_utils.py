@@ -24,7 +24,7 @@ def get_args():
     ##### General settings #####
     parser.add_argument('--seed',
                         type=int,
-                        default=2021,
+                        default=0,
                         help='Random seed')
 
     parser.add_argument('--device',
@@ -34,7 +34,7 @@ def get_args():
     ##### Dataset settings #####
     parser.add_argument('--num_groups',
                         type=int,
-                        default=3,
+                        default=2,
                         help='Number of groups')
 
     parser.add_argument('--num_subjects_per_group',
@@ -88,7 +88,7 @@ def get_args():
 
     parser.add_argument('--num_iterations_clustering',
                         type=int,
-                        default=200,
+                        default=100,
                         help='Number of iterations for Variation Inference during clustering')
 
 

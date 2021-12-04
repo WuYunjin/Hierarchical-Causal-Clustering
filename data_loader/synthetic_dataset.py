@@ -188,7 +188,7 @@ class SyntheticDataset(object):
     def simulate_sem(max_lag, num_samples, num_variables, B_k, A_k, noise_distribution, Pi_k_prime, Mu_k_prime, Sigma_k_prime):
 
         # Make data stable
-        burn_in = 1000
+        burn_in = 200
         T = burn_in
         m = num_variables
 
