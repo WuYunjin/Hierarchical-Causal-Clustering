@@ -70,10 +70,9 @@ def synthetic():
     input_X = torch.tensor(shuffled_data,dtype=torch.float32,device=args.device)
 
     trainer.train_model(model=model, X = input_X, output_dir=output_dir)
-    # trainer.train_model_search(model=model, X = input_X, output_dir=output_dir, groundtruth_cluster=shuffled_cluster,groundtruth_matrix=dataset.matrix)
-
+    
     # Save result
-    # trainer.log_and_save_intermediate_outputs(model)
+    trainer.log_and_save_intermediate_outputs(model)
     _logger.info('Finished training model')
     _logger.info('The groudtruth clusters: {}'.format(shuffled_cluster))
     # Calculate performance
@@ -86,30 +85,30 @@ def synthetic():
     ari=adjusted_rand_score(shuffled_cluster, estimated_cluster) 
     _logger.info('Adjusted Rand index，ARI: {}'.format(ari)) 
 
-    # AUC_list = []
-    # for clu in model.cluster:
-    #     for subject in clu:
-    #         true_cluster_index = shuffled_cluster[subject]
-    #         true_graph = dataset.matrix[true_cluster_index]
+    AUC_list = []
+    for clu in model.cluster:
+        for subject in clu:
+            true_cluster_index = shuffled_cluster[subject]
+            true_graph = dataset.matrix[true_cluster_index]
 
-    #         parameters = model.causal_structures[model.cluster.index(clu)]
+            parameters = model.causal_structures[model.cluster.index(clu)]
             
-    #         estimate_B = np.abs(parameters[0][0].numpy())
-    #         estimate_A = np.abs(parameters[1][0].numpy())
+            estimate_B = np.abs(parameters[0][0].numpy())
+            estimate_A = np.abs(parameters[1][0].numpy())
 
-    #         # Normalize to [0,1]
-    #         estimate_B = estimate_B / np.max(estimate_B) 
-    #         estimate_A = estimate_A / np.max(estimate_A)
+            # Normalize to [0,1]
+            estimate_B = estimate_B / np.max(estimate_B) 
+            estimate_A = estimate_A / np.max(estimate_A)
 
-    #         estimate_graph = np.concatenate([estimate_B.reshape(1,args.num_variables,args.num_variables), estimate_A])
-    #         Score = AUC_score(estimate_graph,true_graph)
-    #         # _logger.info('\n        fpr:{} \n        tpr:{}\n thresholds:{}\n AUC:{}'.format(Score['fpr'],Score['tpr'],Score['thresholds'],Score['AUC']))
-    #         plot_ROC_curve(estimate_graph,true_graph,display_mode=False,save_name=output_dir+'/ROC_Curve_subject{}.png'.format(subject))
-    #         plot_recovered_graph(estimate_graph,true_graph,title='estimated_vs_groundtruth_subject{}'.format(subject),display_mode=False,save_name=output_dir+'/estimated_vs_groundtruth_subject{}.png'.format(subject))
+            estimate_graph = np.concatenate([estimate_B.reshape(1,args.num_variables,args.num_variables), estimate_A])
+            Score = AUC_score(estimate_graph,true_graph)
+            # _logger.info('\n        fpr:{} \n        tpr:{}\n thresholds:{}\n AUC:{}'.format(Score['fpr'],Score['tpr'],Score['thresholds'],Score['AUC']))
+            plot_ROC_curve(estimate_graph,true_graph,display_mode=False,save_name=output_dir+'/ROC_Curve_subject{}.png'.format(subject))
+            plot_recovered_graph(estimate_graph,true_graph,title='estimated_vs_groundtruth_subject{}'.format(subject),display_mode=False,save_name=output_dir+'/estimated_vs_groundtruth_subject{}.png'.format(subject))
 
-    #         AUC_list.append(Score['AUC'])
-    # averaged_AUC = sum(AUC_list)/ len(AUC_list)
-    # _logger.info('Averaged AUC: {}'.format(averaged_AUC))
+            AUC_list.append(Score['AUC'])
+    averaged_AUC = sum(AUC_list)/ len(AUC_list)
+    _logger.info('Averaged AUC: {}'.format(averaged_AUC))
     _logger.info('All Finished!')
 
 

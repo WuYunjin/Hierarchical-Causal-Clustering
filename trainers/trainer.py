@@ -39,21 +39,17 @@ class Trainer(object):
         for k in range(1,n+1):
             # Cluster_result stores the clustering result of n subjects and is a list with size k, Likelihood_result stores the average_likelihood of corresponding cluster.
             # [[1,2,3],[4,5,6]] [[0.1,0.3,0.5],[0.1,0.2,0.7]] [[G1][G2]]
-            Cluster_result, Likelihood_result, Graph_result = self.Causal_Clustering(model,X,k=k,last_cluster=Cluster_dict[k-1],last_likelihood=Likelihood_dict[k-1],last_graph=Graph_dict[k-1])
+            Cluster_result, Likelihood_result, Graph_result, Stop = self.Causal_Clustering(model,X,k=k,last_cluster=Cluster_dict[k-1],last_likelihood=Likelihood_dict[k-1],last_graph=Graph_dict[k-1])
+            if Stop:
+                break
             Cluster_dict[k] = Cluster_result
             Likelihood_dict[k] = Likelihood_result
             Graph_dict[k] = Graph_result
             self._logger.info("The current clusters:{}".format(Cluster_result))
-        score = []
-        for k in range(1,n+1):
-            s = sum(sum(Likelihood_dict[k],[]))
-            score.append(s)
-        plot_losses(score,save_name=output_dir+'/likelihood.png')
-        cluster_index = np.argmax(score)
-        model.cluster = Cluster_dict[cluster_index+1]
+
         self._logger.info("Learning the causal structure for each clusters")
         self.flag_clustering = False
-        # self.Collective_Causal_Structure_learning(model,X)
+        self.Collective_Causal_Structure_learning(model,X)
 
     def Collective_Causal_Structure_learning(self,model,X):
         graphs = []
@@ -71,6 +67,7 @@ class Trainer(object):
 
     def Causal_Clustering(self,model,X,k,last_cluster,last_likelihood,last_graph):
         n,Ts,m = X.shape
+        Stop_flag = False
         if k==1:
             # case: all subject in one cluster
             
@@ -90,17 +87,17 @@ class Trainer(object):
                 Cluster_result[0].append(i)
                 
         else:
-            cluster_std_likelihood = [np.var(cluster,dtype=np.float64) for cluster in last_likelihood]
-            # Find the cluster with the biggest cluster_std_likelihood and split it into two clusters
+            cluster_var_likelihood = [np.var(cluster,dtype=np.float64) for cluster in last_likelihood]
+            # Find the cluster with the biggest cluster_var_likelihood and split it into two clusters
             while 1:
-                cluster_index = np.argmax(cluster_std_likelihood)
+                cluster_index = np.argmax(cluster_var_likelihood)
                 cluster_X_index = last_cluster[cluster_index]
                 if len(cluster_X_index)>1:
                     break
                 else:
-                    cluster_std_likelihood[cluster_index] = float('-inf')
+                    cluster_var_likelihood[cluster_index] = float('-inf')
 
-            self._logger.info("The subject under the biggest cluster_std_likelihood Cluster is:{}".format(cluster_X_index))
+            self._logger.info("The subject under the biggest cluster_var_likelihood Cluster is:{}".format(cluster_X_index))
             
             i = np.argmax(last_likelihood[cluster_index])
             self._logger.info("The index of subject with biggest likelihood in cluster {} is:{}".format(cluster_X_index,cluster_X_index[i]))
@@ -146,8 +143,6 @@ class Trainer(object):
                     Cluster_j_likelihood.append(Xs_Gj_likelihood.item())
                     
             
-            self._logger.info("The cluster with smallest average likelihood in last clustering result is splited into two clusters:\n {} -> {} and {}".format(cluster_X_index,Cluster_i,Cluster_j))
-            
             
             Cluster_result = []
             Likelihood_result = []
@@ -165,8 +160,14 @@ class Trainer(object):
             Likelihood_result.append(Cluster_j_likelihood)
             Graph_result.append(Gj_tmp)
 
+            if sum(sum(last_likelihood,[]))> sum(sum(Likelihood_result,[])):
+                model.cluster = last_cluster
+                Stop_flag = True
+
+            if not Stop_flag:
+                self._logger.info("The cluster with biggest var_likelihood in last clustering result is splited into two clusters:\n {} -> {} and {}".format(cluster_X_index,Cluster_i,Cluster_j))
             
-        return Cluster_result, Likelihood_result, Graph_result
+        return Cluster_result, Likelihood_result, Graph_result, Stop_flag
 
 
     def Calculate_likelihood(self,causal_structure,Xs):

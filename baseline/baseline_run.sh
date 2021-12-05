@@ -9,7 +9,7 @@ do
                 nohup python -u baseline/baseline_main.py  --seed $seed --num_variables 5  --num_subjects_per_group $n_sub --num_samples 60 --num_groups 2 > nohup.txt 2>&1 &
                 sleep 3
         done
-        # wait
+        wait
 done
 wait
 
@@ -20,7 +20,7 @@ do
                 nohup python -u baseline/baseline_main.py  --seed $seed  --num_variables 5 --num_subjects_per_group 15 --num_samples $n_sample --num_groups 2 > nohup.txt 2>&1 &
                 sleep 3
         done
-        # wait
+        wait
 done
 wait
 
@@ -31,7 +31,7 @@ do
                 nohup python -u baseline/baseline_main.py  --seed $seed  --num_variables 5 --num_subjects_per_group $((60 / $n_group)) --num_samples 60 --num_groups $n_group  > nohup.txt 2>&1 &
                 sleep 3
         done
-        # wait
+        wait
 done
 wait
 
@@ -42,6 +42,6 @@ do
                 nohup python -u baseline/baseline_main.py  --seed $seed  --num_variables $n_variable --num_samples 60 --num_groups 2 --num_subjects_per_group 15 > nohup.txt 2>&1 &
                 sleep 3
         done
-        # wait
+        wait
 done
 wait
