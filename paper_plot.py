@@ -5,7 +5,7 @@ from matplotlib.pyplot import MultipleLocator
 
 def single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=0.05):
     x = np.array( [i+1 for i in range(len(xticklabels))] )
-    plt.rcParams['font.sans-serif'] = ['Arial']  
+    plt.rcParams['font.sans-serif'] = [u'SimHei']
     plt.rcParams['axes.unicode_minus'] = False  
 
     fig, ax = plt.subplots(ncols=1,dpi=800,figsize=(24, 16))
@@ -32,9 +32,9 @@ def single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_loca
     ax.set_ylim(ymin=ylim[0],ymax=ylim[1])
     plt.setp(ax.get_yticklabels(),fontsize=60, fontweight='bold')
 
-    ax.legend(loc='lower left',fontsize=50)
+    ax.legend(loc='lower left',fontsize=30,markerscale=0.7)
 
-    plt.savefig('./result/{}.pdf'.format(title), format='pdf',bbox_inches='tight')  #bbox_inches用来去除白边
+    plt.savefig('./result/{}.png'.format(title), format='png',bbox_inches='tight')  #bbox_inches用来去除白边
 
 if __name__ == "__main__":
 
@@ -48,9 +48,9 @@ if __name__ == "__main__":
     xticklabels = [20,30,40,50,60] # x轴刻度的标识
     xlim = [0.5, 5.5]
     ylim = [-0.15, 1.04]
-    x_label = " Number of subject"
+    x_label = "个体总数"
     y_label = "ARI"
-    method_name = ['KMeans(DTW)','KMeans(Euclidean)','DBSCAN(DTW)','OPTICS(DTW)','HEAR']
+    method_name = ['KMeans(DTW)','KMeans(Euclidean)','DBSCAN(DTW)','OPTICS(DTW)','LEAD']
     title = 'ARI under different number of subject'
     single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=None)
 
@@ -62,9 +62,9 @@ if __name__ == "__main__":
     xticklabels = [20,30,40,50,60] # x轴刻度的标识
     xlim = [0.5, 5.5]
     ylim = [0.46, 1.01]
-    x_label = " Number of subject"
+    x_label = "个体总数"
     y_label = "AUC"
-    method_name = ['SVAR','PCMCI','DYNOTEARS','HEAR']
+    method_name = ['VAR-LiNGAM','PCMCI','DYNOTEARS','LEAD']
     title = 'AUC under different number of subject'
     single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=0.1)
 
@@ -82,9 +82,9 @@ if __name__ == "__main__":
     xticklabels = [40,60,80,100,120] # x轴刻度的标识
     xlim = [0.5, 5.5]
     ylim = [-0.15, 1.04]
-    x_label = "  Sample size"
+    x_label = "时间序列长度"
     y_label = "ARI"
-    method_name = ['KMeans(DTW)','KMeans(Euclidean)','DBSCAN(DTW)','OPTICS(DTW)','HEAR']
+    method_name = ['KMeans(DTW)','KMeans(Euclidean)','DBSCAN(DTW)','OPTICS(DTW)','LEAD']
     title = 'ARI under different sample size'
     single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=None)
 
@@ -97,9 +97,9 @@ if __name__ == "__main__":
     xticklabels = [40,60,80,100,120] # x轴刻度的标识
     xlim = [0.5, 5.5]
     ylim = [0.46, 1.01]
-    x_label = " Sample size"
+    x_label = "时间序列长度"
     y_label = "AUC"
-    method_name = ['SVAR','PCMCI','DYNOTEARS','HEAR']
+    method_name = ['VAR-LiNGAM','PCMCI','DYNOTEARS','LEAD']
     title = 'AUC under different sample size'
     single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=0.1)
 
@@ -116,9 +116,9 @@ if __name__ == "__main__":
     xticklabels = [2,3,4,5,6] # x轴刻度的标识
     xlim = [0.5, 5.5]
     ylim = [-0.15, 1.04]
-    x_label = "Number of Group"
+    x_label = "群体个数"
     y_label = "ARI"
-    method_name = ['KMeans(DTW)','KMeans(Euclidean)','DBSCAN(DTW)','OPTICS(DTW)','HEAR']
+    method_name = ['KMeans(DTW)','KMeans(Euclidean)','DBSCAN(DTW)','OPTICS(DTW)','LEAD']
     title = 'ARI under different number of group'
     single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=None)
 
@@ -131,9 +131,9 @@ if __name__ == "__main__":
     xticklabels = [2,3,4,5,6] # x轴刻度的标识
     xlim = [0.5, 5.5]
     ylim = [0.46, 1.01]
-    x_label = "Number of Group"
+    x_label = "群体个数"
     y_label = "AUC"
-    method_name = ['SVAR','PCMCI','DYNOTEARS','HEAR']
+    method_name = ['VAR-LiNGAM','PCMCI','DYNOTEARS','LEAD']
     title = 'AUC under different number of group'
     single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=0.1)
 
@@ -150,9 +150,9 @@ if __name__ == "__main__":
     xticklabels = [6,8,10,12,14] # x轴刻度的标识
     xlim = [0.5, 5.5]
     ylim = [-0.15, 1.04]
-    x_label = "Number of Variable"
+    x_label = "变量个数"
     y_label = "ARI"
-    method_name = ['KMeans(DTW)','KMeans(Euclidean)','DBSCAN(DTW)','OPTICS(DTW)','HEAR']
+    method_name = ['KMeans(DTW)','KMeans(Euclidean)','DBSCAN(DTW)','OPTICS(DTW)','LEAD']
     title = 'ARI under different number of variable'
     single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=None)
 
@@ -165,8 +165,8 @@ if __name__ == "__main__":
     xticklabels = [6,8,10,12,14] # x轴刻度的标识
     xlim = [0.5, 5.5]
     ylim = [0.46, 1.01]
-    x_label = "Number of Variable"
+    x_label = "变量个数"
     y_label = "AUC"
-    method_name = ['SVAR','PCMCI','DYNOTEARS','HEAR']
+    method_name = ['VAR-LiNGAM','PCMCI','DYNOTEARS','LEAD']
     title = 'AUC under different number of variable'
     single_plot(y,xticklabels,xlim,ylim,x_label,y_label,method_name,title,y_locator=0.1)

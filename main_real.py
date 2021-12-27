@@ -89,7 +89,6 @@ def baseline_cell(output_dir):
     args.num_subjects_per_group = 25
     args.num_groups = 2
     args.num_variables = 11
-    
     # Reproducibility
     set_seed(args.seed)
 
@@ -114,7 +113,7 @@ def baseline_cell(output_dir):
     ari,_ = OPTICS_dtw(shuffled_data,shuffled_cluster)
     _logger.info('Using OPTICS(DTW) and Adjusted Rand index，ARI: {}'.format(ari)) 
 
-def hear_cell(output_dir):
+def lead_cell(output_dir):
     
     np.set_printoptions(precision=3)
     
@@ -126,6 +125,8 @@ def hear_cell(output_dir):
     args.num_variables = 11
     args.max_lag = 0
     args.num_iterations_clustering = 1000
+    args.num_iterations_structurelearning = 2000
+    args.num_total_iterations = 2
     args.seed=2022
 
     _logger = logging.getLogger(__name__)
@@ -179,6 +180,8 @@ def hear_cell(output_dir):
         parameters = model.causal_structures[c]
 
         estimate_B = np.abs(parameters[0][0].numpy())
+        threshold = sorted(estimate_B.reshape(-1))[-10] # Top N edges
+        estimate_B[estimate_B<threshold]=0
 
         estimate_graph = estimate_B.reshape(1,args.num_variables,args.num_variables)
 
@@ -199,6 +202,6 @@ if __name__ == '__main__':
     LogHelper.setup(log_path='{}/training.log'.format(output_dir),
                     level_str='INFO')
 
-    hear_cell(output_dir)
+    lead_cell(output_dir)
     baseline_cell(output_dir)
 
